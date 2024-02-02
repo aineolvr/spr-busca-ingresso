@@ -1,42 +1,42 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const btnBusca = document.getElementById('btn-busca');
-    const cameraContainer = document.getElementById('camera-container');
-    const btnCapturar = document.getElementById('btn-capturar');
-    const btnCancelar = document.getElementById('btn-cancelar');
-    const cameraPreview = document.getElementById('camera-preview');
+document.addEventListener("DOMContentLoaded", function () {
+    const btnBusca = document.getElementById("btn-busca");
 
-    btnBusca.addEventListener('click', function () {
-        // Oculta o conteúdo principal
-        document.querySelector('.content').style.display = 'none';
-        // Exibe o container da câmera
-        cameraContainer.style.display = 'flex';
+    btnBusca.addEventListener("click", () => {
+        openCamera();
+    });
 
-        // Acessa a câmera do dispositivo
+    function openCamera() {
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then((stream) => {
-                cameraPreview.srcObject = stream;
+                const video = document.createElement("video");
+                document.body.appendChild(video);
+                video.srcObject = stream;
+                video.setAttribute("playsinline", true);
+                video.play();
+
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                video.addEventListener("loadedmetadata", () => {
+                    setInterval(() => {
+                        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, canvas.width, canvas.height);
+                        
+                        if (code) {
+                            alert("Código QR lido: " + code.data);
+                            // Aqui você pode fazer algo com o código QR lido
+                            stream.getTracks().forEach(track => track.stop());
+                            document.body.removeChild(video);
+                            document.body.removeChild(canvas);
+                        }
+                    }, 1000);
+                });
             })
             .catch((error) => {
-                console.error('Erro ao acessar a câmera:', error);
+                console.error("Erro ao acessar a câmera: ", error);
             });
-    });
-
-    btnCancelar.addEventListener('click', function () {
-        // Exibe o conteúdo principal
-        document.querySelector('.content').style.display = 'block';
-        // Oculta o container da câmera
-        cameraContainer.style.display = 'none';
-
-        // Parar o stream da câmera
-        const stream = cameraPreview.srcObject;
-        const tracks = stream.getTracks();
-
-        tracks.forEach(track => track.stop());
-
-        cameraPreview.srcObject = null;
-    });
-
-    btnCapturar.addEventListener('click', function () {
-       
-    });
+    }
 });
