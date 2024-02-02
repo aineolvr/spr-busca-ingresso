@@ -15,7 +15,7 @@ body, html{
 }
 
 .container{
-   
+    position: relative;
     text-align: center;
     max-width: 600px; 
     margin: 0 auto;
@@ -25,6 +25,7 @@ body, html{
 
 .content{
     width: 100%;
+    z-index: 2;
 }
 
 .content h1{
@@ -59,12 +60,11 @@ button:hover{
 
 /* ESTILO CONTAINER CAMERA */
 
-#camera-container {
-    display: none;
-    justify-content: space-around;
-}
-
-video {
+#video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 400px;
+    height: 100%;
+    z-index: 1;
 }
