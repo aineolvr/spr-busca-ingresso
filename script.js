@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", function () {
     const btnBusca = document.getElementById("btn-busca");
+    const videoContainer = document.getElementById("video-container");
 
     btnBusca.addEventListener("click", () => {
         openCamera();
     });
 
     function openCamera() {
+        // Oculta o botão ao clicar
+        btnBusca.style.display = "none";
+
         navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
             .then((stream) => {
                 const video = document.createElement("video");
@@ -28,6 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (code) {
                             alert("Código QR lido: " + code.data);
                             // Aqui você pode fazer algo com o código QR lido
+
+                            // Mostra novamente o botão
+                            btnBusca.style.display = "block";
+
                             stream.getTracks().forEach(track => track.stop());
                             document.body.removeChild(video);
                             document.body.removeChild(canvas);
@@ -37,6 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch((error) => {
                 console.error("Erro ao acessar a câmera: ", error);
+
+                // Mostra novamente o botão em caso de erro
+                btnBusca.style.display = "block";
             });
     }
 });
