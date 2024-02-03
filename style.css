@@ -11,7 +11,7 @@ body, html{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color:#DCDCDC;
+  
 }
 
 .container{
@@ -21,11 +21,13 @@ body, html{
     margin: 0 auto;
     padding: 0 20px;
     text-align: center;
+    
 }
 
 .content{
     width: 100%;
     z-index: 2;
+    
 }
 
 .content h1{
