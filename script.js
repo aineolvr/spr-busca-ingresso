@@ -12,6 +12,8 @@ async function iniciarLeituraQR() {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
+        console.log('Câmera aberta com sucesso!');
+
         const intervalId = setInterval(() => {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
