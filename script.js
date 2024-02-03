@@ -1,37 +1,41 @@
-async function iniciarLeituraQR() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        document.getElementById('video-container').appendChild(video);
+    function iniciarLeituraQR() {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+            .then(function (stream) {
+                document.getElementById('video-container').innerHTML = '<video id="video" playsinline class="w-100"></video>';
+                var video = document.getElementById('video');
+                video.srcObject = stream;
+                video.play();
+                
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: video
+                    },
+                    decoder: {
+                        readers: ["code_128_reader"]
+                    }
+                }, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+                    Quagga.start();
+                });
 
-        await video.play();
-
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-
-        console.log('Câmera aberta com sucesso!');
-
-        const intervalId = setInterval(() => {
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            const code = jsQR(imageData.data, canvas.width, canvas.height);
-
-            if (code) {
-                // Código QR encontrado, faça o que for necessário com o código (por exemplo, interagir com a API)
-                alert('Código QR encontrado: ' + code.data);
-                // Pare a leitura após encontrar o código
-                clearInterval(intervalId);
-                // Encerre o stream de vídeo
-                stream.getTracks().forEach(track => track.stop());
-                // Remova o vídeo e o canvas
-                video.remove();
-                canvas.remove();
-            }
-        }, 100);
-    } catch (error) {
-        console.error('Erro ao acessar a câmera:', error);
+                Quagga.onDetected(function (result) {
+                    Quagga.stop();
+                    video.srcObject.getTracks().forEach(track => track.stop());
+                    document.getElementById('video-container').innerHTML = '';
+                    // Exibir pop-up de sucesso com SweetAlert2
+                    Swal.fire({
+                        title: "Sucesso!",
+                        text: "Código QR lido: " + result.codeResult.code,
+                        icon: "success"
+                    });
+                });
+            })
+            .catch(function (err) {
+                console.error(err);
+            });
     }
-}
