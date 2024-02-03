@@ -63,6 +63,6 @@ button:hover{
 /* ESTILO CONTAINER CAMERA */
 #video-container {
     position: relative; /* Alterado para relative para permitir o posicionamento responsivo */
-    padding-top: 56.25%; /* Proporção 16:9 para manter a consistência no tamanho do vídeo */
+   
     width: 100%;
 }
