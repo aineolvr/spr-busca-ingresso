@@ -63,6 +63,6 @@ button:hover{
 /* ESTILO CONTAINER CAMERA */
 #video-container {
     position: relative; /* Alterado para relative para permitir o posicionamento responsivo */
-   
+    
     width: 100%;
 }
